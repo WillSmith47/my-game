@@ -12,24 +12,69 @@
             align-items: center;
             height: 100vh;
             background-color: #f4f4f4;
+            flex-direction: column; /* Добавляем flex-direction для размещения панели сверху */
         }
 
         #character {
             position: relative;
             cursor: pointer;
         }
+
+        #status-bar {
+            width: 100%;
+            height: 50px;
+            background-color: #333;
+            color: white;
+            font-size: 18px;
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            box-sizing: border-box;
+        }
     </style>
 </head>
 <body>
+    <!-- Панель статуса -->
+    <div id="status-bar">
+        <span id="strength">Strength: 0</span>
+        <span id="energy">Energy: 1000</span>
+    </div>
+
+    <!-- Персонаж -->
     <img id="character" src="https://willsmith47.github.io/my-game/OKlTqbSLSUmeiIi8PJK2LQ.png" alt="Character">
 
     <script>
+        let strength = 0;
+        let energy = 1000;
+        let tapCooldown = 60;  // Время для восстановления энергии (секунды)
+
+        const strengthElement = document.getElementById('strength');
+        const energyElement = document.getElementById('energy');
         const character = document.getElementById('character');
 
-        character.addEventListener('click', () => {
-            alert('Вы получили очко энергии!');
-            // Здесь можно добавить логику для увеличения очков энергии
-        });
+        function updateStatus() {
+            strengthElement.textContent = `Strength: ${strength}`;
+            energyElement.textContent = `Energy: ${energy}`;
+        }
+
+        function tap() {
+            if (energy > 0) {
+                strength += 1;
+                energy -= 1;
+                updateStatus();
+            } else {
+                alert('No more energy! Wait for it to recharge.');
+            }
+        }
+
+        // Обработчик для тапов
+        character.addEventListener('click', tap);
+
+        // Восстановление энергии каждую минуту
+        setInterval(() => {
+            energy = 1000;
+            updateStatus();
+        }, tapCooldown * 1000);
     </script>
 </body>
 </html>
