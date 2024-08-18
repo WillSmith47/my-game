@@ -55,31 +55,19 @@
     <script>
         let strength = 0;
         let energy = 1000;
+        const ENERGY_MAX = 1000;
+        const ENERGY_REPLENISH_RATE = 1; // Энергия пополняется на 1 единицу в секунду
 
         const character = document.getElementById('character');
         const strengthElement = document.getElementById('strength');
         const energyElement = document.getElementById('energy');
-
-        // Загрузка данных из localStorage
-        window.onload = () => {
-            const savedStrength = localStorage.getItem('strength');
-            const savedEnergy = localStorage.getItem('energy');
-            if (savedStrength !== null) {
-                strength = parseInt(savedStrength);
-            }
-            if (savedEnergy !== null) {
-                energy = parseInt(savedEnergy);
-            }
-            updateDisplay();
-            // Запуск функции пополнения энергии
-            startEnergyReplenishment();
-        };
 
         const updateDisplay = () => {
             energyElement.textContent = `Энергия: ${energy}/1000`;
             strengthElement.textContent = `Сила: ${strength}`;
             localStorage.setItem('strength', strength);
             localStorage.setItem('energy', energy);
+            localStorage.setItem('lastUpdate', Date.now());
         };
 
         const handleTap = () => {
@@ -96,18 +84,37 @@
             handleTap();
         });
 
-        // Функция для пополнения энергии
         const startEnergyReplenishment = () => {
             setInterval(() => {
-                if (energy < 1000) {
-                    energy += 1;
+                if (energy < ENERGY_MAX) {
+                    const now = Date.now();
+                    const lastUpdate = parseInt(localStorage.getItem('lastUpdate')) || now;
+                    const elapsed = Math.max(0, now - lastUpdate);
+                    const replenishAmount = Math.floor(elapsed / 1000) * ENERGY_REPLENISH_RATE;
+                    energy = Math.min(ENERGY_MAX, energy + replenishAmount);
                     updateDisplay();
                 }
-            }, 1000);
+            }, 1000); // Проверяем каждую секунду
         };
 
-        // Запуск функции пополнения энергии
-        startEnergyReplenishment();
+        window.onload = () => {
+            const savedStrength = localStorage.getItem('strength');
+            const savedEnergy = localStorage.getItem('energy');
+            if (savedStrength !== null) {
+                strength = parseInt(savedStrength);
+            }
+            if (savedEnergy !== null) {
+                energy = parseInt(savedEnergy);
+            }
+            updateDisplay();
+            startEnergyReplenishment();
+        };
+
+        window.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
+                updateDisplay();
+            }
+        });
     </script>
 </body>
 </html>
