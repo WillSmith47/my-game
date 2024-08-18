@@ -71,6 +71,8 @@
                 energy = parseInt(savedEnergy);
             }
             updateDisplay();
+            // Запуск функции пополнения энергии
+            startEnergyReplenishment();
         };
 
         const updateDisplay = () => {
@@ -94,13 +96,18 @@
             handleTap();
         });
 
-        // Пополнение энергии каждую секунду
-        setInterval(() => {
-            if (energy < 1000) {
-                energy += 1;
-                updateDisplay();
-            }
-        }, 1000);
+        // Функция для пополнения энергии
+        const startEnergyReplenishment = () => {
+            setInterval(() => {
+                if (energy < 1000) {
+                    energy += 1;
+                    updateDisplay();
+                }
+            }, 1000);
+        };
+
+        // Запуск функции пополнения энергии
+        startEnergyReplenishment();
     </script>
 </body>
 </html>
