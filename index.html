@@ -7,71 +7,55 @@
     <style>
         body {
             margin: 0;
-            padding: 0;
-            overflow: hidden;
-            background: url('https://willsmith47.github.io/my-game/UkTsheFSTpOXXh2sAGgajQ.png') no-repeat center center;
-            background-size: cover;
             display: flex;
-            align-items: center;
             justify-content: center;
+            align-items: center;
             height: 100vh;
-            touch-action: none; /* Отключение масштабирования на сенсорных экранах */
-        }
-
-        #game-container {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
+            background: url('https://willsmith47.github.io/my-game/UkTsheFSTpOXXh2sAGgajQ.png') no-repeat center center fixed;
+            background-size: cover;
+            overflow: hidden;
+            touch-action: none; /* Запрещаем масштабирование */
         }
 
         #character {
+            position: relative;
             cursor: pointer;
-            width: 150px; /* Настройте размер по вашему усмотрению */
-            height: 300px; /* Настройте размер по вашему усмотрению */
-            touch-action: manipulation; /* Отключение масштабирования для изображения */
+            transition: transform 0.1s ease-in-out;
         }
 
-        #info-panel {
-            position: fixed;
+        #character:active {
+            transform: scale(0.9); /* Уменьшение при нажатии */
+        }
+
+        .info-panel {
+            position: absolute;
             top: 10px;
             left: 10px;
             color: white;
-            background: rgba(0, 0, 0, 0.5);
+            font-size: 18px;
+            font-weight: bold;
+            background: rgba(0, 0, 0, 0.6);
             padding: 10px;
             border-radius: 5px;
-            font-size: 18px;
         }
     </style>
 </head>
 <body>
-    <div id="game-container">
-        <div id="info-panel">
-            <div id="strength">Сила: 0</div>
-            <div id="energy">Энергия: 1000</div>
-        </div>
-        <img id="character" src="https://willsmith47.github.io/my-game/OKlTqbSLSUmeiIi8PJK2LQ.png" alt="Character">
+    <div class="info-panel">
+        <div id="strength">Сила: 0</div>
+        <div id="energy">Энергия: 1000</div>
     </div>
-    
+    <img id="character" src="https://willsmith47.github.io/my-game/OKlTqbSLSUmeiIi8PJK2LQ.png" alt="Character">
+
     <script>
+        let strength = 0;
+        let energy = 1000;
+
         const character = document.getElementById('character');
         const strengthElement = document.getElementById('strength');
         const energyElement = document.getElementById('energy');
 
-        let strength = 0;
-        let energy = 1000;
-        const MAX_ENERGY = 1000;
-
-        const updateDisplay = () => {
-            strengthElement.textContent = `Сила: ${strength}`;
-            energyElement.textContent = `Энергия: ${energy}`;
-            localStorage.setItem('strength', strength);
-            localStorage.setItem('energy', energy);
-        };
-
+        // Загрузка данных из localStorage
         window.onload = () => {
             const savedStrength = localStorage.getItem('strength');
             const savedEnergy = localStorage.getItem('energy');
@@ -84,16 +68,26 @@
             updateDisplay();
         };
 
-        character.addEventListener('click', () => {
+        const updateDisplay = () => {
+            energyElement.textContent = `Энергия: ${energy}`;
+            strengthElement.textContent = `Сила: ${strength}`;
+            localStorage.setItem('strength', strength);
+            localStorage.setItem('energy', energy);
+        };
+
+        const handleTap = () => {
             if (energy > 0) {
                 strength += 1;
                 energy -= 1;
                 updateDisplay();
             }
-        });
+        };
 
+        character.addEventListener('click', handleTap);
+
+        // Пополнение энергии каждую секунду
         setInterval(() => {
-            if (energy < MAX_ENERGY) {
+            if (energy < 1000) {
                 energy += 1;
                 updateDisplay();
             }
