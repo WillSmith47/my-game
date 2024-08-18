@@ -76,7 +76,7 @@
         };
 
         const updateDisplay = () => {
-            energyElement.textContent = `Энергия: ${energy}`;
+            energyElement.textContent = `Энергия: ${energy}/1000`;
             strengthElement.textContent = `Сила: ${strength}`;
             localStorage.setItem('strength', strength);
             localStorage.setItem('energy', energy);
