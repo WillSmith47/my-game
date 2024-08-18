@@ -15,6 +15,7 @@
             align-items: center;
             justify-content: center;
             height: 100vh;
+            touch-action: none; /* Отключение масштабирования на сенсорных экранах */
         }
 
         #game-container {
@@ -31,6 +32,7 @@
             cursor: pointer;
             width: 150px; /* Настройте размер по вашему усмотрению */
             height: 300px; /* Настройте размер по вашему усмотрению */
+            touch-action: manipulation; /* Отключение масштабирования для изображения */
         }
 
         #info-panel {
