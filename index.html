@@ -7,81 +7,53 @@
     <style>
         body {
             margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            height: 100vh;
-            background-color: #f4f4f4;
-            font-family: Arial, sans-serif;
-            background-image: url('https://willsmith47.github.io/my-game/UkTsheFSTpOXXh2sAGgajQ.png'); /* Замените на URL фона */
-            background-size: cover;
-            background-position: center;
+            padding: 0;
+            overflow: hidden;
         }
 
-        #info {
+        #game-container {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            background-color: #333;
-            color: #fff;
-            text-align: center;
-            padding: 10px;
-            box-sizing: border-box;
+            height: 100%;
+            background: url('https://example.com/background.png') no-repeat center center;
+            background-size: cover;
         }
 
         #character {
-            position: relative;
+            position: absolute;
             cursor: pointer;
-            margin-top: 20px;
-            transition: transform 0.1s ease; /* Плавный эффект нажатия */
-        }
-
-        #character:active {
-            transform: scale(0.95); /* Уменьшение картинки при наатии */
-        }
-
-        #energy, #strength {
-            font-size: 18px;
+            width: 100px; /* Примерный размер */
+            height: 200px; /* Примерный размер */
         }
     </style>
 </head>
 <body>
-    <div id="info">
-        <div id="energy">Энергия: 1000</div>
-        <div id="strength">Сила: 0</div>
+    <div id="game-container">
+        <img id="character" src="https://example.com/character.png" alt="Character">
+        <div id="info-panel">
+            <!-- Панель с информацией -->
+            <div id="strength">Сила: 0</div>
+            <div id="energy">Энергия: 1000/1000</div>
+        </div>
     </div>
-    <img id="character" src="https://willsmith47.github.io/my-game/OKlTqbSLSUmeiIi8PJK2LQ.png" alt="Character">
-
+    
     <script>
         const character = document.getElementById('character');
-        const energyElement = document.getElementById('energy');
         const strengthElement = document.getElementById('strength');
+        const energyElement = document.getElementById('energy');
+
         let strength = 0;
         let energy = 1000;
+        const MAX_ENERGY = 1000;
 
         const updateDisplay = () => {
-            energyElement.textContent = `Энергия: ${energy}`;
             strengthElement.textContent = `Сила: ${strength}`;
+            energyElement.textContent = `Энергия: ${energy}`;
             localStorage.setItem('strength', strength);
             localStorage.setItem('energy', energy);
         };
-
-        const handleClick = () => {
-            if (energy > 0) {
-                strength++;
-                energy--;
-                updateDisplay();
-            }
-        };
-
-        character.addEventListener('click', handleClick);
-
-        const replenishEnergy = () => {
-            if (energy < 1000) {
-                energy = Math.min(energy + 1, 1000);
-                updateDisplay();
-            }
-        };
-
-        setInterval(replenishEnergy, 1000);
 
         window.onload = () => {
             const savedStrength = localStorage.getItem('strength');
@@ -94,6 +66,21 @@
             }
             updateDisplay();
         };
+
+        character.addEventListener('click', () => {
+            if (energy > 0) {
+                strength += 1;
+                energy -= 1;
+                updateDisplay();
+            }
+        });
+
+        setInterval(() => {
+            if (energy < MAX_ENERGY) {
+                energy += 1;
+                updateDisplay();
+            }
+        }, 1000);
     </script>
 </body>
 </html>
