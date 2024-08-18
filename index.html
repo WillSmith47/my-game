@@ -60,6 +60,8 @@
         const updateDisplay = () => {
             energyElement.textContent = `Энергия: ${energy}`;
             strengthElement.textContent = `Сила: ${strength}`;
+            localStorage.setItem('strength', strength);
+            localStorage.setItem('energy', energy);
         };
 
         const handleClick = () => {
@@ -80,6 +82,18 @@
         };
 
         setInterval(replenishEnergy, 1000);
+
+        window.onload = () => {
+            const savedStrength = localStorage.getItem('strength');
+            const savedEnergy = localStorage.getItem('energy');
+            if (savedStrength !== null) {
+                strength = parseInt(savedStrength);
+            }
+            if (savedEnergy !== null) {
+                energy = parseInt(savedEnergy);
+            }
+            updateDisplay();
+        };
     </script>
 </body>
 </html>
