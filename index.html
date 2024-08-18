@@ -38,6 +38,11 @@
             padding: 10px;
             border-radius: 5px;
         }
+
+        /* Отключаем масштабирование для мобильных устройств */
+        html, body {
+            touch-action: none;
+        }
     </style>
 </head>
 <body>
@@ -83,9 +88,10 @@
             }
         };
 
-        character.addEventListener('pointerdown', handleTap);
-        character.addEventListener('pointerup', () => {
-            // Можно добавить дополнительную логику, если нужно
+        // Используем touchstart для обработки касаний на мобильных устройствах
+        character.addEventListener('touchstart', (event) => {
+            event.preventDefault(); // Предотвращаем масштабирование
+            handleTap();
         });
 
         // Пополнение энергии каждую секунду
