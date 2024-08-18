@@ -1,33 +1,52 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Clicker Game</title>
+    <title>Telegram Game</title>
     <style>
         body { text-align: center; font-family: Arial, sans-serif; }
         #game { margin-top: 20px; }
         .button { display: inline-block; margin: 10px; padding: 10px 20px; background: #007BFF; color: white; border: none; border-radius: 5px; cursor: pointer; }
         .button:active { background: #0056b3; }
+        #status { font-size: 1.2em; }
     </style>
 </head>
 <body>
-    <h1>Welcome to the Clicker Game!</h1>
+    <h1>Добро пожаловать в игру!</h1>
     <div id="game">
-        <button class="button" onclick="clickButton()">Click me!</button>
-        <p id="status">Current Score: 0</p>
+        <button class="button" onclick="tap()">💪 Качать энергию</button>
+        <button class="button" onclick="buyProtein()">🛒 Купить протеин</button>
+        <button class="button" onclick="showHelp()">❓ Помощь</button>
+        <p id="status">Текущая энергия: 0</p>
+    </div>
+    <div id="help" style="display:none;">
+        <h2>Как играть</h2>
+        <p>Нажимайте кнопку "💪 Качать энергию" чтобы заработать энергию. Когда наберете достаточно энергии, вы сможете купить протеин, нажимая кнопку "🛒 Купить протеин".</p>
     </div>
     <script>
-        let score = 0;
+        let energy = 0;
         const statusElement = document.getElementById('status');
+        const helpElement = document.getElementById('help');
 
-        function clickButton() {
-            score += 1;
+        function tap() {
+            energy += 1;
             updateStatus();
         }
 
+        function buyProtein() {
+            if (energy >= 10) {
+                energy -= 10;
+                updateStatus();
+            } else {
+                alert('Не хватает энергии для покупки протеина!');
+            }
+        }
+
+        function showHelp() {
+            helpElement.style.display = helpElement.style.display === 'none' ? 'block' : 'none';
+        }
+
         function updateStatus() {
-            statusElement.textContent = `Current Score: ${score}`;
+            statusElement.textContent = `Текущая энергия: ${energy}`;
         }
     </script>
 </body>
