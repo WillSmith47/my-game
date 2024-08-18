@@ -83,7 +83,10 @@
             }
         };
 
-        character.addEventListener('click', handleTap);
+        character.addEventListener('pointerdown', handleTap);
+        character.addEventListener('pointerup', () => {
+            // Можно добавить дополнительную логику, если нужно
+        });
 
         // Пополнение энергии каждую секунду
         setInterval(() => {
