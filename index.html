@@ -58,6 +58,9 @@
         const ENERGY_MAX = 1000;
         const ENERGY_REPLENISH_RATE = 1; // Энергия пополняется на 1 единицу в секунду
 
+        const urlParams = new URLSearchParams(window.location.search);
+        const telegramId = urlParams.get('telegram_id');
+
         const character = document.getElementById('character');
         const strengthElement = document.getElementById('strength');
         const energyElement = document.getElementById('energy');
@@ -68,6 +71,19 @@
             localStorage.setItem('strength', strength);
             localStorage.setItem('energy', energy);
             localStorage.setItem('lastUpdate', Date.now());
+
+            // Обновляем данные на сервере
+            fetch('/update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    telegram_id: telegramId,
+                    strength: strength,
+                    energy: energy
+                })
+            });
         };
 
         const handleTap = () => {
@@ -97,50 +113,26 @@
             }, 1000); // Проверяем каждую секунду
         };
 
-        const saveData = async () => {
-            const telegramId = 'YOUR_TELEGRAM_ID'; // замените на текущий Telegram ID пользователя
-            const response = await fetch('/save', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    telegram_id: telegramId,
-                    strength: strength,
-                    energy: energy
+        window.onload = () => {
+            fetch(`/get_user?telegram_id=${telegramId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.strength !== undefined) {
+                        strength = data.strength;
+                        energy = data.energy;
+                        updateDisplay();
+                    }
+                    startEnergyReplenishment();
                 })
-            });
-            const result = await response.json();
-            console.log(result);
+                .catch(error => {
+                    console.error('Error fetching user data:', error);
+                    startEnergyReplenishment();
+                });
         };
 
-        const loadData = async () => {
-            const telegramId = 'YOUR_TELEGRAM_ID'; // замените на текущий Telegram ID пользователя
-            const response = await fetch('/load', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ telegram_id: telegramId })
-            });
-            const result = await response.json();
-            strength = result.strength;
-            energy = result.energy;
-            updateDisplay();
-        };
-
-        window.onload = async () => {
-            await loadData();
-            updateDisplay();
-            startEnergyReplenishment();
-        };
-
-        window.addEventListener('beforeunload', saveData);
         window.addEventListener('visibilitychange', () => {
             if (document.visibilityState === 'visible') {
                 updateDisplay();
-            } else {
-                saveData();
             }
         });
     </script>
