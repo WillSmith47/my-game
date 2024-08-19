@@ -97,22 +97,50 @@
             }, 1000); // Проверяем каждую секунду
         };
 
-        window.onload = () => {
-            const savedStrength = localStorage.getItem('strength');
-            const savedEnergy = localStorage.getItem('energy');
-            if (savedStrength !== null) {
-                strength = parseInt(savedStrength);
-            }
-            if (savedEnergy !== null) {
-                energy = parseInt(savedEnergy);
-            }
+        const saveData = async () => {
+            const telegramId = 'YOUR_TELEGRAM_ID'; // замените на текущий Telegram ID пользователя
+            const response = await fetch('/save', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    telegram_id: telegramId,
+                    strength: strength,
+                    energy: energy
+                })
+            });
+            const result = await response.json();
+            console.log(result);
+        };
+
+        const loadData = async () => {
+            const telegramId = 'YOUR_TELEGRAM_ID'; // замените на текущий Telegram ID пользователя
+            const response = await fetch('/load', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ telegram_id: telegramId })
+            });
+            const result = await response.json();
+            strength = result.strength;
+            energy = result.energy;
+            updateDisplay();
+        };
+
+        window.onload = async () => {
+            await loadData();
             updateDisplay();
             startEnergyReplenishment();
         };
 
+        window.addEventListener('beforeunload', saveData);
         window.addEventListener('visibilitychange', () => {
             if (document.visibilityState === 'visible') {
                 updateDisplay();
+            } else {
+                saveData();
             }
         });
     </script>
