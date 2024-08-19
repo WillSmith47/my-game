@@ -83,7 +83,10 @@
                     strength: strength,
                     energy: energy
                 })
-            });
+            })
+            .then(response => response.json())
+            .then(data => console.log('Data updated successfully:', data))
+            .catch(error => console.error('Error updating data:', error));
         };
 
         const handleTap = () => {
